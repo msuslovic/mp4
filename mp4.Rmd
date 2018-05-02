@@ -9,6 +9,7 @@ output: html_document:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<<<<<<< HEAD
 Female directors, writers, and producers
 Source: IMDB
 name table: has gender
@@ -26,3 +27,5 @@ http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-y
 -how do the ratings differ
 -are there more females working in a particular country (in info table)?
 
+=======
+>>>>>>> 2b7d345d8059d8b2a7af52aef82c89366fe76cf7
