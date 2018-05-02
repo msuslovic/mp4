@@ -15,6 +15,16 @@ Source: IMDB
 name table: has gender
 info table: runtime, genres
 kind_type: movie=1
+role_type: director=8, producer=3, 
+
+join role_type with cast_info based on 
+
+SELECT ci. person_id, ci. movie_id, ci. role_id
+FROM cast_info ci
+JOIN role_type rt
+ON ci. role_id = rt .id
+WHERE rt.id = 8
+;
 
 
 
