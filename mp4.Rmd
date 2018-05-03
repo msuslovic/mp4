@@ -36,4 +36,67 @@ http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-y
 -how do the ratings differ
 -are there more females working in a particular country (in info table)?
 
+```{r}
+library(mdsr)
+library(tidyverse)
+library(RMySQL)
+db <- dbConnect_scidb(dbname = "imdb")
+```
+
+```{r}
+base <- db %>%
+  dbGetQuery("SELECT n. gender, t. Production_year
+FROM cast_info ci
+JOIN role_type rt
+ON ci. role_id = rt .id
+JOIN name n
+ON n.id =  ci. person_id
+JOIN movie_info mi ON mi. movie_id = ci. movie_id
+JOIN info_type it ON mi. Info_type_id = it.id
+JOIN title t ON t.id  = ci. movie_id
+JOIN kind_type kt ON kt. id = t. kind_id 
+WHERE gender = 'f'AND rt.id = 8 AND t. kind_id = 1 AND (info_type_id = 1 OR info_type_id = 3)
+GROUP BY production_year
+")
+
+head(base)
+```
+
+
+```{r}
+genre <- db %>%
+  dbGetQuery("SELECT n. gender, t. Production_year, mi.info
+FROM cast_info ci
+JOIN role_type rt
+ON ci. role_id = rt .id
+JOIN name n
+ON n.id =  ci. person_id
+JOIN movie_info mi ON mi. movie_id = ci. movie_id
+JOIN info_type it ON mi. Info_type_id = it.id
+JOIN title t ON t.id  = ci. movie_id
+JOIN kind_type kt ON kt. id = t. kind_id 
+WHERE  rt.id = 8 AND t. kind_id = 1 AND info_type_id = 3
+")
+
+```
+
+```{r}
+genre <- genre %>%
+  select(gender, info) %>%
+  filter (!is.na(gender), !is.na(info))
+
+g_sum <- genre %>%
+  group_by(info) %>%
+  summarise(S = n())
+
+genre_w <-genre %>%
+  group_by(info) %>%
+  summarise(p = sum(gender == "f")) %>%
+  left_join(g_sum, by = "info") %>%
+  mutate (p_w = p/S*100) %>%
+  arrange (desc(p_w))
+  
+
+
+```
 
