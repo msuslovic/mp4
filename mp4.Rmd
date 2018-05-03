@@ -95,8 +95,21 @@ genre_w <-genre %>%
   left_join(g_sum, by = "info") %>%
   mutate (p_w = p/S*100) %>%
   arrange (desc(p_w))
-  
 
+top_5 <- genre_w %>%
+  arrange (desc(p)) %>%
+  head(5) %>%
+  ggplot(aes (x = info, y = p))+
+  geom_bar(stat = "identity")
 
+top_5
+
+ptop_5 <- genre_w %>%
+  arrange (desc(p_w)) %>%
+  head(5) %>%
+  ggplot(aes (x = info, y = p_w))+
+  geom_bar(stat = "identity")
+
+ptop_5
 ```
 
