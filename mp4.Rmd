@@ -1,5 +1,5 @@
 ---
-title: "Mp4"
+title: "MP4"
 author: "Meghan Suslovic & Yifan Ma"
 date: "5/3/2018"
 output: html_document:
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Female directors, writers, and producers
 Source: IMDB
 name table: has gender
-info table: runtime, genres
+info_type: runtime, genres
 kind_type: movie=1
 role_type: director=8, producer=3, 
 
@@ -35,6 +35,12 @@ http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-y
 -is there a genre of movie that women direct in higher percentages
 -how do the ratings differ
 -are there more females working in a particular country (in info table)?
+<<<<<<< HEAD
+-how does their budget compare to movies with male directors?
+-are females directing in higher ratios in independent films vs studio ones?
+=======
+>>>>>>> 2b7d345d8059d8b2a7af52aef82c89366fe76cf7
+=======
 
 ```{r}
 library(mdsr)
@@ -129,3 +135,4 @@ ptop_5 <- genre_w %>%
 ptop_5
 ```
 
+>>>>>>> dc5abb58e06763a5b29bf12666bb33f252192c34
