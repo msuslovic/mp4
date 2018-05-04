@@ -119,7 +119,8 @@ top_5m
 Sum <-g_sum %>%
   head(10)%>%
   ggplot(aes (x = info, y = S)) +
-  geom_bar(stat = "identity")
+  geom_bar(stat = "identity") +
+  theme(axis.text.x= element_text(angle=45)) 
 
 Sum
 
