@@ -26,7 +26,6 @@ WHERE rt.id = 8
 ;
 
 
-
 Context:
 http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-you-should-know-about-and-why-you-might-not 
 
@@ -38,9 +37,7 @@ http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-y
 <<<<<<< HEAD
 -how does their budget compare to movies with male directors?
 -are females directing in higher ratios in independent films vs studio ones?
-=======
->>>>>>> 2b7d345d8059d8b2a7af52aef82c89366fe76cf7
-=======
+
 
 ```{r}
 library(mdsr)
@@ -119,4 +116,3 @@ ptop_5 <- genre_w %>%
 ptop_5
 ```
 
->>>>>>> dc5abb58e06763a5b29bf12666bb33f252192c34
