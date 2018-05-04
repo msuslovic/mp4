@@ -25,7 +25,6 @@ WHERE rt.id = 8
 ;
 
 
-
 Context:
 http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-you-should-know-about-and-why-you-might-not 
 
@@ -144,7 +143,10 @@ top_5m
 Sum <-g_sum %>%
   head(10)%>%
   ggplot(aes (x = info, y = S)) +
-  geom_bar(stat = "identity")
+  geom_bar(stat = "identity") +
+  theme(axis.text.x= element_text(angle=45)) +
+  ggtitle(label = "Number of Movies Produced in Each Genre", subtitle = "Source: IMDB")+
+  labs(x = "Genre",  y = "Number of Movies")
 
 
 ptop_5 <- genre_w %>%
@@ -156,4 +158,7 @@ ptop_5 <- genre_w %>%
 ptop_5
 ```
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 506254f44a2c7ed0eadeeffc3fb3790231eba525
