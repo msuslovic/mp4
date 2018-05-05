@@ -121,10 +121,10 @@ Sum <-g_sum %>%
   ggplot(aes (x = info, y = S)) +
   geom_bar(stat = "identity") +
   theme(axis.text.x= element_text(angle=45)) +
-  ggtitle(label = "Number of Movies Produced in Each Genre", subtitle = "Source: IMDB")+
-  labs(x = "Genre",  y = "Number of Movies")
+  labs(title= "Number of Movies Produced in Each Genre", x = "Genre",  y = "Number of Movies", caption = "Source: IMDB")
 
 Sum
+
 
 ptop_5 <- genre_w %>%
   arrange (desc(p_w)) %>%
