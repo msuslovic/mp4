@@ -44,8 +44,10 @@ library(RMySQL)
 db <- dbConnect_scidb(dbname = "imdb")
 ```
 
+### Directors
+
 ```{r}
-trend <- db %>%
+directors <- db %>%
   dbGetQuery("SELECT n. gender, mi. movie_id,t. Production_year, mi. info
 FROM cast_info ci
 JOIN role_type rt
@@ -60,35 +62,128 @@ WHERE rt.id = 8 AND t. kind_id = 1 AND info_type_id = 1
 HAVING info > 40
 ")
 
-head(trend)
+head(directors)
 
-trend <- trend %>%
+directors <- directors %>%
   filter (Production_year != 2018,Production_year != 2021, Production_year != 2024, Production_year != 2019, Production_year != 2020, !is.na(gender))
   
 
-t_sum <- trend %>%
+d_sum <- directors %>%
   group_by(Production_year) %>%
   summarise(sum_n = n())
 
-timeline <- trend %>%
+d_timeline <- directors %>%
   filter(gender == "f") %>%
   group_by(Production_year) %>%
   summarise(f = n()) %>%
-  left_join (t_sum, by ="Production_year") %>%
+  left_join (d_sum, by ="Production_year") %>%
   mutate(p = f/sum_n*100)
   
-t <- timeline %>%
+d <- d_timeline %>%
   ggplot(aes( x = Production_year, y = p))+
   geom_line()
   
-t_total <- timeline %>%
+t_total <- d_timeline %>%
   ggplot(aes( x = Production_year, y = sum_n))+
   geom_line()
 
-t
+d
 t_total  
 ```
 
+### Writers
+
+```{r}
+writer <- db %>%
+  dbGetQuery("SELECT n. gender, mi. movie_id,t. Production_year, mi. info
+FROM cast_info ci
+JOIN role_type rt
+ON ci. role_id = rt .id
+JOIN name n
+ON n.id =  ci. person_id
+JOIN movie_info mi ON mi. movie_id = ci. movie_id
+JOIN info_type it ON mi. Info_type_id = it.id
+JOIN title t ON t.id  = ci. movie_id
+JOIN kind_type kt ON kt. id = t. kind_id 
+WHERE rt.id = 3 AND t. kind_id = 1 AND info_type_id = 1
+HAVING info > 40
+")
+
+head(writer)
+
+writer <- writer %>%
+  filter (Production_year != 2018, Production_year != 2024, Production_year != 2019, Production_year != 2020, !is.na(gender))
+  
+
+w_sum <- writer %>%
+  group_by(Production_year) %>%
+  summarise(sum_n = n())
+
+w_timeline <- writer %>%
+  filter(gender == "f") %>%
+  group_by(Production_year) %>%
+  summarise(f = n()) %>%
+  left_join (w_sum, by ="Production_year") %>%
+  mutate(p = f/sum_n*100)
+  
+w <- w_timeline %>%
+  ggplot(aes( x = Production_year, y = p))+
+  geom_line()
+  
+w_total <- w_timeline %>%
+  ggplot(aes( x = Production_year, y = sum_n))+
+  geom_line()
+
+w
+w_total  
+```
+
+###Producers
+
+```{r}
+producers <- db %>%
+  dbGetQuery("SELECT n. gender, mi. movie_id,t. Production_year, mi. info
+FROM cast_info ci
+JOIN role_type rt
+ON ci. role_id = rt .id
+JOIN name n
+ON n.id =  ci. person_id
+JOIN movie_info mi ON mi. movie_id = ci. movie_id
+JOIN info_type it ON mi. Info_type_id = it.id
+JOIN title t ON t.id  = ci. movie_id
+JOIN kind_type kt ON kt. id = t. kind_id 
+WHERE rt.id = 4 AND t. kind_id = 1 AND info_type_id = 1
+HAVING info > 40
+")
+
+head(producers)
+
+#producers <- producers %>%
+  #filter (Production_year != 2018,Production_year != 2021, Production_year != 2024, Production_year != 2019, Production_year != 2020, !is.na(gender))
+  
+
+p_sum <- producers %>%
+  group_by(Production_year) %>%
+  summarise(sum_n = n())
+
+p_timeline <- producers %>%
+  filter(gender == "f") %>%
+  group_by(Production_year) %>%
+  summarise(f = n()) %>%
+  left_join (p_sum, by ="Production_year") %>%
+  mutate(p = f/sum_n*100)
+  
+p <- w_producers %>%
+  ggplot(aes(x = Production_year, y = p))+
+  geom_line()
+  
+p_total <- p_timeline %>%
+  ggplot(aes( x = Production_year, y = sum_n))+
+  geom_line()
+
+p
+p_total  
+```
 
 ```{r}
 genre <- db %>%
