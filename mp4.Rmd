@@ -158,7 +158,3 @@ ptop_5 <- genre_w %>%
 ptop_5
 ```
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 506254f44a2c7ed0eadeeffc3fb3790231eba525
