@@ -170,11 +170,20 @@ dof <- directors_of%>%
   labs(title= "Percent of Female Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
   theme_linedraw()
 
-do
-dof
-du
-duf
+directors_a <- directors_o %>%
+  inner_join(directors_usa, by = "Production_year.x") %>%
+  ggplot(aes(x = Production_year.x, y = S.y))+
+  geom_line(color = "blue")+
+  geom_line(aes(x = Production_year.x, y = S.x),color = "red")
 
+directors_af <- directors_of %>%
+  inner_join(directors_usaf, by = "Production_year.x") %>%
+  ggplot(aes(x = Production_year.x, y = p.y), color = "blue")+
+  geom_line()+
+  geom_line(aes(x = Production_year.x, y = p.x), color = "red")
+
+#S.y is USA.
+#P.y is USA
 ```
 
 ### Writers
