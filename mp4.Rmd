@@ -158,8 +158,8 @@ HAVING info > 40
 
 head(producers)
 
-#producers <- producers %>%
-  #filter (Production_year != 2018,Production_year != 2021, Production_year != 2024, Production_year != 2019, Production_year != 2020, !is.na(gender))
+producers <- producers %>%
+  filter (Production_year == (1911:2017), !is.na(gender))
   
 
 p_sum <- producers %>%
@@ -253,3 +253,4 @@ ptop_5 <- genre_w %>%
 ptop_5
 ```
 
+### time frame check 
