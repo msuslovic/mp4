@@ -59,7 +59,7 @@ JOIN movie_info mi ON mi. movie_id = ci. movie_id
 JOIN info_type it ON mi. Info_type_id = it.id
 JOIN title t ON t.id  = ci. movie_id
 JOIN kind_type kt ON kt. id = t. kind_id 
-WHERE rt.id = 8 AND t. kind_id = 1 AND info_type_id = 1
+WHERE rt.id = 8 AND t. kind_id = 1 AND (info_type_id = 1 OR info
 HAVING info > 40
 ")
 
@@ -94,6 +94,87 @@ t_total <- d_timeline %>%
 
 d
 t_total  
+```
+
+### Directors by country
+
+```{r}
+directors_c <- db %>%
+  dbGetQuery("SELECT n. gender, mi. movie_id,t. Production_year, mi. info
+FROM cast_info ci
+JOIN role_type rt
+ON ci. role_id = rt .id
+JOIN name n
+ON n.id =  ci. person_id
+JOIN movie_info mi ON mi. movie_id = ci. movie_id
+JOIN info_type it ON mi. Info_type_id = it.id
+JOIN title t ON t.id  = ci. movie_id
+JOIN kind_type kt ON kt. id = t. kind_id 
+WHERE rt.id = 8 AND t. kind_id = 1 AND  info_type_id = 8
+") 
+
+directors_c <- directors_c %>%
+  filter (!is.na(gender), !is.na(Production_year), !is.na(info)) %>%
+  right_join(directors, by = "movie_id")
+  
+directors_usa <- directors_c %>%
+  filter (info.x == "USA") %>%
+  select(gender.x, Production_year.x, info.x) %>%
+  group_by(Production_year.x) %>%
+  summarise(S = n())
+
+du <- directors_usaf %>%
+  ggplot(aes(x = Production_year.x, y = S)) +
+  geom_line()+
+  labs(title= "Total Number of Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
+  theme_linedraw()
+  
+directors_usaf <- directors_c %>%
+  filter (info.x == "USA", gender.x == "f") %>%
+  select(gender.x, Production_year.x, info.x) %>%
+  group_by(Production_year.x) %>%
+  summarise(f = n()) %>%
+  left_join (directors_usa, by ="Production_year.x") %>%
+  mutate(p = f/S*100)
+
+duf <- directors_usaf %>%
+  ggplot(aes(x = Production_year.x, y = p)) +
+  geom_line()+
+  labs(title= "Percent of Female Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
+  theme_linedraw()
+
+  
+directors_o <- directors_c %>%
+  filter(info.x != "USA" ) %>%
+  select(gender.x, Production_year.x, info.x) %>%
+  group_by(Production_year.x) %>%
+  summarise(S = n()) 
+  
+do <- directors_of %>%
+  ggplot(aes(x = Production_year.x, y = S)) +
+  geom_line()+
+  labs(title= "Total Number of Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
+  theme_linedraw()
+
+directors_of <- directors_c %>%
+  filter(info.x != "USA", gender.x == "f" ) %>%
+  select(gender.x, Production_year.x, info.x) %>%
+  group_by(Production_year.x) %>%
+  summarise(f = n()) %>%
+  left_join (directors_o, by = "Production_year.x") %>%
+  mutate(p = f/S*100)
+
+dof <- directors_of%>%
+  ggplot(aes(x = Production_year.x, y = p))+
+  geom_line()+
+  labs(title= "Percent of Female Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
+  theme_linedraw()
+
+do
+dof
+du
+duf
+
 ```
 
 ### Writers
@@ -242,13 +323,13 @@ top_5f <- genre_w %>%
 
 top_5f
 
-top_5m <- genre_w %>%
+#top_5m <- genre_w %>%
   arrange (desc(m_w)) %>%
-  head(10)%>%
+  head(5)%>%
   ggplot(aes(x = info, y = m_w))+
-  geom_bar(stat = "identity")
-
-top_5m
+  geom_bar(stat = "identity")+
+  labs(title= "Genres That Have the Most Male Directors", x = "Genre",  y = "Percent of Male Directors", caption = "Source: IMDB")+
+ theme_linedraw()
 
 Sum <-g_sum %>%
   head(10)%>%
