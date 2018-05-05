@@ -40,6 +40,7 @@ http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-y
 ```{r}
 library(mdsr)
 library(tidyverse)
+library(ggplot2)
 library(RMySQL)
 db <- dbConnect_scidb(dbname = "imdb")
 ```
@@ -82,12 +83,14 @@ d_timeline <- directors %>%
 d <- d_timeline %>%
   ggplot(aes( x = Production_year, y = p))+
   geom_line()+
-  labs(title= "Percent of Female Directors From (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")
+  labs(title= "Percent of Female Directors (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
+  theme_linedraw()
   
 t_total <- d_timeline %>%
   ggplot(aes( x = Production_year, y = sum_n))+
   geom_line()+
-  labs(title= "Total Number of Directors From (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")
+  labs(title= "Total Number of Directors (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
+  theme_linedraw()
 
 d
 t_total  
@@ -132,12 +135,14 @@ w_timeline <- writer %>%
 w <- w_timeline %>%
   ggplot(aes( x = Production_year, y = p))+
   geom_line()+
-  labs(title= "Percent of Female Writers From (1912-2017) ", x = "Year of Production",  y = "Percent of Female Writers", caption = "Source: IMDB")
+  labs(title= "Percent of Female Writers (1912-2017) ", x = "Year of Production",  y = "Percent of Female Writers", caption = "Source: IMDB")+
+  theme_linedraw()
   
 w_total <- w_timeline %>%
   ggplot(aes( x = Production_year, y = sum_n))+
   geom_line()+
-  labs(title= "Number of All Writers From (1912-2017) ", x = "Year of Production",  y = "Number of Writers", caption = "Source: IMDB")
+  labs(title= "Number of All Writers (1912-2017) ", x = "Year of Production",  y = "Number of Writers", caption = "Source: IMDB")+
+  theme_linedraw()
 
 w
 w_total  
@@ -182,12 +187,14 @@ p_timeline <- producers %>%
 p <- p_timeline %>%
   ggplot(aes(x = Production_year, y = p))+
   geom_line()+
-  labs(title= "Percent of Female Producers From (1911-2017) ", x = "Year of Production",  y = "Percent of Female Producers", caption = "Source: IMDB")
+  labs(title= "Percent of Female Producers (1911-2017) ", x = "Year of Production",  y = "Percent of Female Producers", caption = "Source: IMDB")+
+  theme_linedraw()
   
 p_total <- p_sum %>%
   ggplot(aes( x = Production_year, y = sum_n))+
   geom_line()+
-  labs(title= "Number of All Producers (1911-2017) ", x = "Year of Production",  y = "Number of Producers", caption = "Source: IMDB")
+  labs(title= "Number of All Producers (1911-2017) ", x = "Year of Production",  y = "Number of Producers", caption = "Source: IMDB")+
+  theme_linedraw()
 
 p
 p_total  
@@ -248,17 +255,20 @@ Sum <-g_sum %>%
   ggplot(aes (x = info, y = S)) +
   geom_bar(stat = "identity") +
   theme(axis.text.x= element_text(angle=45)) +
-  labs(title= "Number of Movies Produced in Each Genre", x = "Genre",  y = "Number of Movies", caption = "Source: IMDB")
+  labs(title= "Number of Movies Produced in Each Genre", x = "Genre",  y = "Number of Movies", caption = "Source: IMDB")+
+ theme_linedraw()
 
 
 
 ptop_5 <- genre_w %>%
-  arrange (desc(p_w)) %>%
+  arrange (desc(f_w)) %>%
   head(5) %>%
-  ggplot(aes (x = info, y = p_w))+
-  geom_bar(stat = "identity")
+  ggplot(aes (x = info, y = f_w))+
+  geom_bar(stat = "identity")+
+  labs(title= "Genres That Have the Most Female Directors", x = "Genre",  y = "Percent of Female Directors ", caption = "Source: IMDB")+
+  theme_linedraw()
 
+Sum
 ptop_5
 ```
 
-### time frame check 
