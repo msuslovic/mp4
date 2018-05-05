@@ -81,11 +81,13 @@ d_timeline <- directors %>%
   
 d <- d_timeline %>%
   ggplot(aes( x = Production_year, y = p))+
-  geom_line()
+  geom_line()+
+  labs(title= "Percent of Female Directors From (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")
   
 t_total <- d_timeline %>%
   ggplot(aes( x = Production_year, y = sum_n))+
-  geom_line()
+  geom_line()+
+  labs(title= "Total Number of Directors From (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")
 
 d
 t_total  
@@ -117,6 +119,7 @@ writer <- writer %>%
 
 w_sum <- writer %>%
   group_by(Production_year) %>%
+  filter(Production_year != 1906, Production_year != 1908, Production_year != 1910) %>%
   summarise(sum_n = n())
 
 w_timeline <- writer %>%
@@ -128,11 +131,13 @@ w_timeline <- writer %>%
   
 w <- w_timeline %>%
   ggplot(aes( x = Production_year, y = p))+
-  geom_line()
+  geom_line()+
+  labs(title= "Percent of Female Writers From (1912-2017) ", x = "Year of Production",  y = "Percent of Female Writers", caption = "Source: IMDB")
   
 w_total <- w_timeline %>%
   ggplot(aes( x = Production_year, y = sum_n))+
-  geom_line()
+  geom_line()+
+  labs(title= "Number of All Writers From (1912-2017) ", x = "Year of Production",  y = "Number of Writers", caption = "Source: IMDB")
 
 w
 w_total  
@@ -159,10 +164,11 @@ HAVING info > 40
 head(producers)
 
 producers <- producers %>%
-  filter (Production_year == (1911:2017), !is.na(gender))
+  filter (Production_year != 2018, Production_year != 2024, Production_year != 2019, Production_year != 2020, !is.na(gender))
   
 
 p_sum <- producers %>%
+  filter(Production_year != 1908, Production_year != 1910)%>%
   group_by(Production_year) %>%
   summarise(sum_n = n())
 
@@ -173,13 +179,15 @@ p_timeline <- producers %>%
   left_join (p_sum, by ="Production_year") %>%
   mutate(p = f/sum_n*100)
   
-p <- w_producers %>%
+p <- p_timeline %>%
   ggplot(aes(x = Production_year, y = p))+
-  geom_line()
+  geom_line()+
+  labs(title= "Percent of Female Producers From (1911-2017) ", x = "Year of Production",  y = "Percent of Female Producers", caption = "Source: IMDB")
   
-p_total <- p_timeline %>%
+p_total <- p_sum %>%
   ggplot(aes( x = Production_year, y = sum_n))+
-  geom_line()
+  geom_line()+
+  labs(title= "Number of All Producers (1911-2017) ", x = "Year of Production",  y = "Number of Producers", caption = "Source: IMDB")
 
 p
 p_total  
