@@ -2,11 +2,10 @@
 title: "MP4"
 author: "Meghan Suslovic & Yifan Ma"
 date: "5/3/2018"
-output: html_document
+output:
+  html_document:
+    code_folding: hide
 ---
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 Female directors, writers, and producers
 Source: IMDB
@@ -37,7 +36,7 @@ http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-y
 -are females directing in higher ratios in independent films vs studio ones?
 
 
-```{r}
+```{r, message=FALSE}
 library(mdsr)
 library(tidyverse)
 library(ggplot2)
@@ -59,7 +58,7 @@ JOIN movie_info mi ON mi. movie_id = ci. movie_id
 JOIN info_type it ON mi. Info_type_id = it.id
 JOIN title t ON t.id  = ci. movie_id
 JOIN kind_type kt ON kt. id = t. kind_id 
-WHERE rt.id = 8 AND t. kind_id = 1 AND (info_type_id = 1 OR info
+WHERE rt.id = 8 AND t. kind_id = 1 AND info_type_id = 1
 HAVING info > 40
 ")
 
@@ -123,11 +122,6 @@ directors_usa <- directors_c %>%
   group_by(Production_year.x) %>%
   summarise(S = n())
 
-du <- directors_usaf %>%
-  ggplot(aes(x = Production_year.x, y = S)) +
-  geom_line()+
-  labs(title= "Total Number of Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
-  theme_linedraw()
   
 directors_usaf <- directors_c %>%
   filter (info.x == "USA", gender.x == "f") %>%
@@ -136,6 +130,12 @@ directors_usaf <- directors_c %>%
   summarise(f = n()) %>%
   left_join (directors_usa, by ="Production_year.x") %>%
   mutate(p = f/S*100)
+
+du <- directors_usaf %>%
+  ggplot(aes(x = Production_year.x, y = S)) +
+  geom_line()+
+  labs(title= "Total Number of Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
+  theme_linedraw()
 
 duf <- directors_usaf %>%
   ggplot(aes(x = Production_year.x, y = p)) +
@@ -150,12 +150,6 @@ directors_o <- directors_c %>%
   group_by(Production_year.x) %>%
   summarise(S = n()) 
   
-do <- directors_of %>%
-  ggplot(aes(x = Production_year.x, y = S)) +
-  geom_line()+
-  labs(title= "Total Number of Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
-  theme_linedraw()
-
 directors_of <- directors_c %>%
   filter(info.x != "USA", gender.x == "f" ) %>%
   select(gender.x, Production_year.x, info.x) %>%
@@ -163,6 +157,12 @@ directors_of <- directors_c %>%
   summarise(f = n()) %>%
   left_join (directors_o, by = "Production_year.x") %>%
   mutate(p = f/S*100)
+
+do <- directors_of %>%
+  ggplot(aes(x = Production_year.x, y = S)) +
+  geom_line()+
+  labs(title= "Total Number of Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
+  theme_linedraw()
 
 dof <- directors_of%>%
   ggplot(aes(x = Production_year.x, y = p))+
@@ -243,8 +243,7 @@ JOIN movie_info mi ON mi. movie_id = ci. movie_id
 JOIN info_type it ON mi. Info_type_id = it.id
 JOIN title t ON t.id  = ci. movie_id
 JOIN kind_type kt ON kt. id = t. kind_id 
-WHERE rt.id = 4 AND t. kind_id = 1 AND info_type_id = 1
-HAVING info > 40
+WHERE rt.id = 4 AND t. kind_id = 1 AND info_type_id = 1 HAVING info > 40
 ")
 
 head(producers)
@@ -323,7 +322,7 @@ top_5f <- genre_w %>%
 
 top_5f
 
-#top_5m <- genre_w %>%
+top_5m <- genre_w %>%
   arrange (desc(m_w)) %>%
   head(5)%>%
   ggplot(aes(x = info, y = m_w))+
