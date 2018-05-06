@@ -292,16 +292,6 @@ genre_w <-genre %>%
   left_join(g_sum, by = "info") %>%
   mutate (f_w = f/S*100, m_w = m/S*100)
   
-
-top_5f <- genre_w %>%
-  arrange (desc(f_w)) %>%
-  head(10) %>%
-  ggplot(aes(x = info, y = f_w))+
-  geom_bar(stat = "identity")
-
-
-top_5f
-
 top_5m <- genre_w %>%
   arrange (desc(m_w)) %>%
   head(5)%>%
