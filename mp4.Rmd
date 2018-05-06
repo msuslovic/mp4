@@ -7,22 +7,6 @@ output:
     code_folding: hide
 ---
 
-Female directors, writers, and producers
-Source: IMDB
-name table: has gender
-info_type: runtime, genres
-kind_type: movie=1
-role_type: director=8, producer=3, 
-
-join role_type with cast_info based on 
-
-SELECT ci. person_id, ci. movie_id, ci. role_id
-FROM cast_info ci
-JOIN role_type rt
-ON ci. role_id = rt .id
-WHERE rt.id = 8
-;
-
 
 Context:
 http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-you-should-know-about-and-why-you-might-not 
@@ -41,6 +25,7 @@ library(mdsr)
 library(tidyverse)
 library(ggplot2)
 library(RMySQL)
+library(dplyr)
 db <- dbConnect_scidb(dbname = "imdb")
 ```
 
@@ -120,7 +105,7 @@ directors_usa <- directors_c %>%
   filter (info.x == "USA") %>%
   select(gender.x, Production_year.x, info.x) %>%
   group_by(Production_year.x) %>%
-  summarise(S = n())
+  summarise(U.S = n())
 
   
 directors_usaf <- directors_c %>%
@@ -129,26 +114,26 @@ directors_usaf <- directors_c %>%
   group_by(Production_year.x) %>%
   summarise(f = n()) %>%
   left_join (directors_usa, by ="Production_year.x") %>%
-  mutate(p = f/S*100)
+  mutate(u.s = f/U.S*100)
 
-du <- directors_usaf %>%
-  ggplot(aes(x = Production_year.x, y = S)) +
-  geom_line()+
-  labs(title= "Total Number of Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
-  theme_linedraw()
+#du <- directors_usaf %>%
+ # ggplot(aes(x = Production_year.x, y = S)) +
+  #geom_line()+
+  #labs(title= "Total Number of Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
+  #theme_linedraw()
 
-duf <- directors_usaf %>%
-  ggplot(aes(x = Production_year.x, y = p)) +
-  geom_line()+
-  labs(title= "Percent of Female Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
-  theme_linedraw()
+#duf <- directors_usaf %>%
+ # ggplot(aes(x = Production_year.x, y = p)) +
+  #geom_line()+
+  #labs(title= "Percent of Female Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
+  #theme_linedraw()
 
   
 directors_o <- directors_c %>%
   filter(info.x != "USA" ) %>%
   select(gender.x, Production_year.x, info.x) %>%
   group_by(Production_year.x) %>%
-  summarise(S = n()) 
+  summarise(Other = n()) 
   
 directors_of <- directors_c %>%
   filter(info.x != "USA", gender.x == "f" ) %>%
@@ -156,34 +141,36 @@ directors_of <- directors_c %>%
   group_by(Production_year.x) %>%
   summarise(f = n()) %>%
   left_join (directors_o, by = "Production_year.x") %>%
-  mutate(p = f/S*100)
+  mutate(other = f/Other*100)
 
-do <- directors_of %>%
-  ggplot(aes(x = Production_year.x, y = S)) +
-  geom_line()+
-  labs(title= "Total Number of Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
-  theme_linedraw()
+#do <- directors_of %>%
+ # ggplot(aes(x = Production_year.x, y = S)) +
+  #geom_line()+
+  #labs(title= "Total Number of Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
+  #theme_linedraw()
 
-dof <- directors_of%>%
-  ggplot(aes(x = Production_year.x, y = p))+
-  geom_line()+
-  labs(title= "Percent of Female Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
-  theme_linedraw()
+#dof <- directors_of%>%
+ # ggplot(aes(x = Production_year.x, y = p))+
+  #geom_line()+
+  #labs(title= "Percent of Female Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
+  #theme_linedraw()
 
 directors_a <- directors_o %>%
   inner_join(directors_usa, by = "Production_year.x") %>%
-  ggplot(aes(x = Production_year.x, y = S.y))+
-  geom_line(color = "blue")+
-  geom_line(aes(x = Production_year.x, y = S.x),color = "red")
+  ggplot(aes(x = Production_year.x, y = U.S))+
+  geom_line(color = "red")+
+  geom_line(aes(x = Production_year.x, y = Other),color = "blue")+
+  labs(title= " Number of Directors in the Rest of the World VS. in the U.S. (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
+  theme_linedraw()
 
 directors_af <- directors_of %>%
   inner_join(directors_usaf, by = "Production_year.x") %>%
-  ggplot(aes(x = Production_year.x, y = p.y), color = "blue")+
-  geom_line()+
-  geom_line(aes(x = Production_year.x, y = p.x), color = "red")
+  ggplot(aes(x = Production_year.x, y = p.y))+
+  geom_line(color = "red")+
+  geom_line(aes(x = Production_year.x, y = p.x), color = "blue")+
+  labs(title= "Percent of Female Directors in the Rest of the World VS. in the U.S. (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
+  theme_linedraw()
 
-#S.y is USA.
-#P.y is USA
 ```
 
 ### Writers
