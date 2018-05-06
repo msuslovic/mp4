@@ -7,21 +7,8 @@ output:
     code_folding: hide
 ---
 
-<<<<<<< HEAD
-
 Context:
 http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-you-should-know-about-and-why-you-might-not 
-
-
--find percentage of female directors of feature length movies 
--is there a genre of movie that women direct in higher percentages
--how do the ratings differ
--are there more females working in a particular country (in info table)?
--how does their budget compare to movies with male directors?
--are females directing in higher ratios in independent films vs studio ones?
-=======
->>>>>>> af54645542e9782205fd1549a265c3ab619c259d
-
 
 ```{r, message=FALSE}
 library(mdsr)
@@ -56,8 +43,6 @@ JOIN kind_type kt ON kt. id = t. kind_id
 WHERE rt.id = 8 AND t. kind_id = 1 AND info_type_id = 1
 HAVING info > 40
 ")
-
-head(directors)
 
 directors <- directors %>%
   filter (Production_year != 2018,Production_year != 2021, Production_year != 2024, Production_year != 2019, Production_year != 2020, !is.na(gender))
@@ -125,19 +110,6 @@ directors_usaf <- directors_c %>%
   summarise(f = n()) %>%
   left_join (directors_usa, by ="Production_year.x") %>%
   mutate(u.s = f/U.S*100)
-
-#du <- directors_usaf %>%
- # ggplot(aes(x = Production_year.x, y = S)) +
-  #geom_line()+
-  #labs(title= "Total Number of Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
-  #theme_linedraw()
-
-#duf <- directors_usaf %>%
- # ggplot(aes(x = Production_year.x, y = p)) +
-  #geom_line()+
-  #labs(title= "Percent of Female Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
-  #theme_linedraw()
-
   
 directors_o <- directors_c %>%
   filter(info.x != "USA" ) %>%
@@ -152,18 +124,6 @@ directors_of <- directors_c %>%
   summarise(f = n()) %>%
   left_join (directors_o, by = "Production_year.x") %>%
   mutate(other = f/Other*100)
-
-#do <- directors_of %>%
- # ggplot(aes(x = Production_year.x, y = S)) +
-  #geom_line()+
-  #labs(title= "Total Number of Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
-  #theme_linedraw()
-
-#dof <- directors_of%>%
- # ggplot(aes(x = Production_year.x, y = p))+
-  #geom_line()+
-  #labs(title= "Percent of Female Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
-  #theme_linedraw()
 
 directors_a <- directors_o %>%
   inner_join(directors_usa, by = "Production_year.x") %>%
@@ -200,8 +160,6 @@ JOIN kind_type kt ON kt. id = t. kind_id
 WHERE rt.id = 3 AND t. kind_id = 1 AND info_type_id = 1
 HAVING info > 40
 ")
-
-head(writer)
 
 writer <- writer %>%
   filter (Production_year != 2018, Production_year != 2024, Production_year != 2019, Production_year != 2020, !is.na(gender))
@@ -251,8 +209,6 @@ JOIN title t ON t.id  = ci. movie_id
 JOIN kind_type kt ON kt. id = t. kind_id 
 WHERE rt.id = 4 AND t. kind_id = 1 AND info_type_id = 1 HAVING info > 40
 ")
-
-head(producers)
 
 producers <- producers %>%
   filter (Production_year != 2018, Production_year != 2024, Production_year != 2019, Production_year != 2020, !is.na(gender))
