@@ -20,9 +20,11 @@ db <- dbConnect_scidb(dbname = "imdb")
 ```
 
 
-##Where are all the women in Hollywood? Not behind the camera
+#Where are all the women in Hollywood? Not behind the camera
 
 Even without winning Best Director at the 90th Academy Awards for Lady Bird, Greta Gerwig still broke an eight year long steak. The steak she ended? Entirely male nominations for Best Director. The gap in time between female nominations is perhaps less shocking when the total number of women directing films is considered. The Center for the Study of Women in Television and Film found that, of the top 100 grossing films in 2017, only 8% of directors, 10% of writers, and 24% of producers were women. We were curious to see if these percentages remained the same for all feature length films and not just the top 100 grossing films. We used IMDb data to further examine the gender gap in the film industry. IMDb is an online database that maintains information on movies and tv series (among other categories) and all of our data was pulled from the online database.
+
+![Great Gerwig, Source: CNN](https://cdn.cnn.com/cnnnext/dam/assets/180214145019-greta-gerwig---creators-full-169.jpg)
 
 ### Directors
 
@@ -75,7 +77,9 @@ d
 t_total  
 ```
 
-### Directors by country
+## Directors by country
+
+Because Hollywood is such a driving force in the movie industry, it is plausible that whatever the percent of female directors in the United States, that percent would be similar to the rest of the world. United States directors make up a significant portion of directors worldwide, but the rest of the world has been able to maintain higher percentages of female directors for most years. This raises the question of why the United States has a lower percentage. The answer is probably money. The United States is the single largest market in terms of box office revenue, so the huge amounts of money at stake is likely what has kept women out of the director’s chair.
 
 ```{r}
 directors_c <- db %>%
@@ -143,7 +147,9 @@ directors_af <- directors_of %>%
 
 ```
 
-### Writers
+## Writers & Producers
+
+To see if this trend carried over to other aspects of movie production, we created similar graphs for female writers and producers. The percent of female writers and producers also increased between 1911-2017. In 2017, women were 23% of all writers and 18% of producers. Although women in all three job occupations have increased in recent years, the percent of female producers was highest in 1911. However, this peak has limited meaning in terms of understanding the gender gap because there were only six producers in 1911, two of which were female. Once the scale of the film industry grew, women no longer made up a significant portion of it and quickly became outnumbered.
 
 ```{r}
 writer <- db %>%
@@ -193,7 +199,8 @@ w
 w_total  
 ```
 
-###Producers
+
+The general variability in the first decade of the data is likely associated with the relocation of the movie industry to Hollywood. Southern California was an attractive option because of its dry climate, reliable sunlight, and variable topography (and it was far away from Edison’s Motion Picture Parents Company on the East Coast which owned almost all the patents related to movie production). Women may have had an easier time securing jobs in the burgeoning film industry before small production companies, scattered around geographically, began converging on Hollywood in the 1910-1920s, which would have helped them maintain slightly more of the director, writer, and producer positions. As soon as the mergers created companies like Universal Pictures, Paramount Pictures, and MGM, women were pushed to the side and struggled to surpass even 5% of directors, writers, and producers until the 1970s.
 
 ```{r}
 producers <- db %>%
@@ -242,6 +249,10 @@ p
 p_total  
 ```
 
+##Genres 
+
+Other than holding the top job titles, we also wanted to examine which genres of movies women were directing in the highest percentage. Dramas, comedies, and documentaries are the genres with the highest number of movies, yet females direct these genres in very low numbers. Women make up the highest percent of directors in the reality tv genre (30%), but the very low number of reality tv movies that have been produced (310), further highlights that women have barely broken into the industry as directors. 
+
 ```{r}
 genre <- db %>%
   dbGetQuery("SELECT n. gender, t. Production_year, mi.info
@@ -259,7 +270,6 @@ WHERE  rt.id = 8 AND t. kind_id = 1 AND info_type_id = 3
 
 ```
 
-##Genres 
 
 ```{r}
 genre <- genre %>%
@@ -317,6 +327,8 @@ ptop_5
 ```
 
 According to the Motion Picture Association of America, 50% of moviegoers are women, suggesting the demand for movies directed from a female perspective is there. How can this vast underrepresentation of women in film be improved? Supporting movies with female directors by seeing the movie in theaters sends an economic message to the top production companies that we are interested in more female directed movies. An increase in female directors should also help reduce the gender gap in other aspects of movie production. The Center for the Study of Women in Television and Film found that films with at least one female director employed greater percentages of women working as writers, editors, cinematographers, and composers than films with all male directors. So go watch some female-directed movies!
+
+[^See, too many men!](https://media.giphy.com/media/srg19CG0cKMuI/giphy.gif)
 
 Sources: 
 
