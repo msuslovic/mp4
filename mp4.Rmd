@@ -7,20 +7,6 @@ output:
     code_folding: hide
 ---
 
-<<<<<<< HEAD
-
-Context:
-http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-you-should-know-about-and-why-you-might-not 
-
-
--find percentage of female directors of feature length movies 
--is there a genre of movie that women direct in higher percentages
--how do the ratings differ
--are there more females working in a particular country (in info table)?
--how does their budget compare to movies with male directors?
--are females directing in higher ratios in independent films vs studio ones?
-=======
->>>>>>> af54645542e9782205fd1549a265c3ab619c259d
 
 
 ```{r, message=FALSE}
