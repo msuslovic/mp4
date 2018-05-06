@@ -8,7 +8,6 @@ output:
 ---
 
 
-
 ```{r, message=FALSE}
 library(mdsr)
 library(tidyverse)
@@ -17,7 +16,6 @@ library(RMySQL)
 library(dplyr)
 db <- dbConnect_scidb(dbname = "imdb")
 ```
-
 
 #Where are all the women in Hollywood? Not behind the camera
 
@@ -44,8 +42,6 @@ JOIN kind_type kt ON kt. id = t. kind_id
 WHERE rt.id = 8 AND t. kind_id = 1 AND info_type_id = 1
 HAVING info > 40
 ")
-
-head(directors)
 
 directors <- directors %>%
   filter (Production_year != 2018,Production_year != 2021, Production_year != 2024, Production_year != 2019, Production_year != 2020, !is.na(gender))
@@ -115,19 +111,6 @@ directors_usaf <- directors_c %>%
   summarise(f = n()) %>%
   left_join (directors_usa, by ="Production_year.x") %>%
   mutate(u.s = f/U.S*100)
-
-#du <- directors_usaf %>%
- # ggplot(aes(x = Production_year.x, y = S)) +
-  #geom_line()+
-  #labs(title= "Total Number of Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
-  #theme_linedraw()
-
-#duf <- directors_usaf %>%
- # ggplot(aes(x = Production_year.x, y = p)) +
-  #geom_line()+
-  #labs(title= "Percent of Female Directors in the United States (1913-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
-  #theme_linedraw()
-
   
 directors_o <- directors_c %>%
   filter(info.x != "USA" ) %>%
@@ -143,34 +126,31 @@ directors_of <- directors_c %>%
   left_join (directors_o, by = "Production_year.x") %>%
   mutate(other = f/Other*100)
 
-#do <- directors_of %>%
- # ggplot(aes(x = Production_year.x, y = S)) +
-  #geom_line()+
-  #labs(title= "Total Number of Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
-  #theme_linedraw()
-
-#dof <- directors_of%>%
- # ggplot(aes(x = Production_year.x, y = p))+
-  #geom_line()+
-  #labs(title= "Percent of Female Directors in the Rest of the World (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
-  #theme_linedraw()
-
 directors_a <- directors_o %>%
   inner_join(directors_usa, by = "Production_year.x") %>%
   ggplot(aes(x = Production_year.x, y = U.S))+
   geom_line(color = "red")+
   geom_line(aes(x = Production_year.x, y = Other),color = "blue")+
   labs(title= " Number of Directors in the Rest of the World VS. in the U.S. (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
+  geom_text( x = 2015, y = 2000, label = "U.S", color = "red", size = 4, family = "Arial")+
+  geom_text( x = 1988, y = 10000, label = "The Rest of the World", color = "blue", size = 4, family = "Arial")+
   theme_linedraw()
 
+directors_a 
+```
+
+```{r}
 directors_af <- directors_of %>%
   inner_join(directors_usaf, by = "Production_year.x") %>%
-  ggplot(aes(x = Production_year.x, y = p.y))+
+  ggplot(aes(x = Production_year.x, y = u.s))+
   geom_line(color = "red")+
-  geom_line(aes(x = Production_year.x, y = p.x), color = "blue")+
+  geom_line(aes(x = Production_year.x, y = other), color = "blue")+
   labs(title= "Percent of Female Directors in the Rest of the World VS. in the U.S. (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
+   geom_text( x = 2013, y = 6, label = "U.S", color = "red", size = 4, family = "Arial")+
+  geom_text( x = 1982, y = 20, label = "The Rest of the World", color = "blue", size = 4, family = "Arial")+
   theme_linedraw()
 
+directors_af
 ```
 
 ## Writers & Producers
@@ -192,8 +172,6 @@ JOIN kind_type kt ON kt. id = t. kind_id
 WHERE rt.id = 3 AND t. kind_id = 1 AND info_type_id = 1
 HAVING info > 40
 ")
-
-head(writer)
 
 writer <- writer %>%
   filter (Production_year != 2018, Production_year != 2024, Production_year != 2019, Production_year != 2020, !is.na(gender))
@@ -244,8 +222,6 @@ JOIN title t ON t.id  = ci. movie_id
 JOIN kind_type kt ON kt. id = t. kind_id 
 WHERE rt.id = 4 AND t. kind_id = 1 AND info_type_id = 1 HAVING info > 40
 ")
-
-head(producers)
 
 producers <- producers %>%
   filter (Production_year != 2018, Production_year != 2024, Production_year != 2019, Production_year != 2020, !is.na(gender))
