@@ -7,9 +7,6 @@ output:
     code_folding: hide
 ---
 
-Context:
-http://www.denofgeek.com/us/movies/female-directors/252810/26-female-directors-you-should-know-about-and-why-you-might-not 
-
 ```{r, message=FALSE}
 library(mdsr)
 library(tidyverse)
@@ -18,7 +15,6 @@ library(RMySQL)
 library(dplyr)
 db <- dbConnect_scidb(dbname = "imdb")
 ```
-
 
 #Where are all the women in Hollywood? Not behind the camera
 
@@ -135,16 +131,25 @@ directors_a <- directors_o %>%
   geom_line(color = "red")+
   geom_line(aes(x = Production_year.x, y = Other),color = "blue")+
   labs(title= " Number of Directors in the Rest of the World VS. in the U.S. (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
+  geom_text( x = 2015, y = 2000, label = "U.S", color = "red", size = 4, family = "Arial")+
+  geom_text( x = 1988, y = 10000, label = "The Rest of the World", color = "blue", size = 4, family = "Arial")+
   theme_linedraw()
 
+directors_a 
+```
+
+```{r}
 directors_af <- directors_of %>%
   inner_join(directors_usaf, by = "Production_year.x") %>%
-  ggplot(aes(x = Production_year.x, y = p.y))+
+  ggplot(aes(x = Production_year.x, y = u.s))+
   geom_line(color = "red")+
-  geom_line(aes(x = Production_year.x, y = p.x), color = "blue")+
+  geom_line(aes(x = Production_year.x, y = other), color = "blue")+
   labs(title= "Percent of Female Directors in the Rest of the World VS. in the U.S. (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
+   geom_text( x = 2013, y = 6, label = "U.S", color = "red", size = 4, family = "Arial")+
+  geom_text( x = 1982, y = 20, label = "The Rest of the World", color = "blue", size = 4, family = "Arial")+
   theme_linedraw()
 
+directors_af
 ```
 
 ## Writers & Producers
