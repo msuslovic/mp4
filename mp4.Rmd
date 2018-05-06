@@ -74,85 +74,6 @@ d
 t_total  
 ```
 
-## Directors by country
-
-Because Hollywood is such a driving force in the movie industry, it is plausible that whatever the percent of female directors in the United States, that percent would be similar to the rest of the world. United States directors make up a significant portion of directors worldwide, but the rest of the world has been able to maintain higher percentages of female directors for most years. This raises the question of why the United States has a lower percentage. The answer is probably money. The United States is the single largest market in terms of box office revenue, so the huge amounts of money at stake is likely what has kept women out of the director’s chair.
-
-```{r}
-directors_c <- db %>%
-  dbGetQuery("SELECT n. gender, mi. movie_id,t. Production_year, mi. info
-FROM cast_info ci
-JOIN role_type rt
-ON ci. role_id = rt .id
-JOIN name n
-ON n.id =  ci. person_id
-JOIN movie_info mi ON mi. movie_id = ci. movie_id
-JOIN info_type it ON mi. Info_type_id = it.id
-JOIN title t ON t.id  = ci. movie_id
-JOIN kind_type kt ON kt. id = t. kind_id 
-WHERE rt.id = 8 AND t. kind_id = 1 AND  info_type_id = 8
-") 
-
-directors_c <- directors_c %>%
-  filter (!is.na(gender), !is.na(Production_year), !is.na(info)) %>%
-  right_join(directors, by = "movie_id")
-  
-directors_usa <- directors_c %>%
-  filter (info.x == "USA") %>%
-  select(gender.x, Production_year.x, info.x) %>%
-  group_by(Production_year.x) %>%
-  summarise(U.S = n())
-
-  
-directors_usaf <- directors_c %>%
-  filter (info.x == "USA", gender.x == "f") %>%
-  select(gender.x, Production_year.x, info.x) %>%
-  group_by(Production_year.x) %>%
-  summarise(f = n()) %>%
-  left_join (directors_usa, by ="Production_year.x") %>%
-  mutate(u.s = f/U.S*100)
-  
-directors_o <- directors_c %>%
-  filter(info.x != "USA" ) %>%
-  select(gender.x, Production_year.x, info.x) %>%
-  group_by(Production_year.x) %>%
-  summarise(Other = n()) 
-  
-directors_of <- directors_c %>%
-  filter(info.x != "USA", gender.x == "f" ) %>%
-  select(gender.x, Production_year.x, info.x) %>%
-  group_by(Production_year.x) %>%
-  summarise(f = n()) %>%
-  left_join (directors_o, by = "Production_year.x") %>%
-  mutate(other = f/Other*100)
-
-directors_a <- directors_o %>%
-  inner_join(directors_usa, by = "Production_year.x") %>%
-  ggplot(aes(x = Production_year.x, y = U.S))+
-  geom_line(color = "red")+
-  geom_line(aes(x = Production_year.x, y = Other),color = "blue")+
-  labs(title= " Number of Directors in the Rest of the World VS. in the U.S. (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
-  geom_text( x = 2015, y = 2000, label = "U.S", color = "red", size = 4, family = "Arial")+
-  geom_text( x = 1988, y = 10000, label = "The Rest of the World", color = "blue", size = 4, family = "Arial")+
-  theme_linedraw()
-
-directors_a 
-```
-
-```{r}
-directors_af <- directors_of %>%
-  inner_join(directors_usaf, by = "Production_year.x") %>%
-  ggplot(aes(x = Production_year.x, y = u.s))+
-  geom_line(color = "red")+
-  geom_line(aes(x = Production_year.x, y = other), color = "blue")+
-  labs(title= "Percent of Female Directors in the Rest of the World VS. in the U.S. (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
-   geom_text( x = 2013, y = 6, label = "U.S", color = "red", size = 4, family = "Arial")+
-  geom_text( x = 1982, y = 20, label = "The Rest of the World", color = "blue", size = 4, family = "Arial")+
-  theme_linedraw()
-
-directors_af
-```
-
 ## Writers & Producers
 
 To see if this trend carried over to other aspects of movie production, we created similar graphs for female writers and producers. The percent of female writers and producers also increased between 1911-2017. In 2017, women were 23% of all writers and 18% of producers. Although women in all three job occupations have increased in recent years, the percent of female producers was highest in 1911. However, this peak has limited meaning in terms of understanding the gender gap because there were only six producers in 1911, two of which were female. Once the scale of the film industry grew, women no longer made up a significant portion of it and quickly became outnumbered.
@@ -292,16 +213,6 @@ genre_w <-genre %>%
   left_join(g_sum, by = "info") %>%
   mutate (f_w = f/S*100, m_w = m/S*100)
   
-
-top_5f <- genre_w %>%
-  arrange (desc(f_w)) %>%
-  head(10) %>%
-  ggplot(aes(x = info, y = f_w))+
-  geom_bar(stat = "identity")
-
-
-top_5f
-
 top_5m <- genre_w %>%
   arrange (desc(m_w)) %>%
   head(5)%>%
@@ -330,6 +241,85 @@ ptop_5 <- genre_w %>%
 
 Sum
 ptop_5
+```
+
+## Directors by country
+
+Because Hollywood is such a driving force in the movie industry, it is plausible that whatever the percent of female directors in the United States, that percent would be similar to the rest of the world. United States directors make up a significant portion of directors worldwide, but the rest of the world has been able to maintain higher percentages of female directors for most years. This raises the question of why the United States has a lower percentage. The answer is probably money. The United States is the single largest market in terms of box office revenue, so the huge amounts of money at stake is likely what has kept women out of the director’s chair.
+
+```{r}
+directors_c <- db %>%
+  dbGetQuery("SELECT n. gender, mi. movie_id,t. Production_year, mi. info
+FROM cast_info ci
+JOIN role_type rt
+ON ci. role_id = rt .id
+JOIN name n
+ON n.id =  ci. person_id
+JOIN movie_info mi ON mi. movie_id = ci. movie_id
+JOIN info_type it ON mi. Info_type_id = it.id
+JOIN title t ON t.id  = ci. movie_id
+JOIN kind_type kt ON kt. id = t. kind_id 
+WHERE rt.id = 8 AND t. kind_id = 1 AND  info_type_id = 8
+") 
+
+directors_c <- directors_c %>%
+  filter (!is.na(gender), !is.na(Production_year), !is.na(info)) %>%
+  right_join(directors, by = "movie_id")
+  
+directors_usa <- directors_c %>%
+  filter (info.x == "USA") %>%
+  select(gender.x, Production_year.x, info.x) %>%
+  group_by(Production_year.x) %>%
+  summarise(U.S = n())
+
+  
+directors_usaf <- directors_c %>%
+  filter (info.x == "USA", gender.x == "f") %>%
+  select(gender.x, Production_year.x, info.x) %>%
+  group_by(Production_year.x) %>%
+  summarise(f = n()) %>%
+  left_join (directors_usa, by ="Production_year.x") %>%
+  mutate(u.s = f/U.S*100)
+  
+directors_o <- directors_c %>%
+  filter(info.x != "USA" ) %>%
+  select(gender.x, Production_year.x, info.x) %>%
+  group_by(Production_year.x) %>%
+  summarise(Other = n()) 
+  
+directors_of <- directors_c %>%
+  filter(info.x != "USA", gender.x == "f" ) %>%
+  select(gender.x, Production_year.x, info.x) %>%
+  group_by(Production_year.x) %>%
+  summarise(f = n()) %>%
+  left_join (directors_o, by = "Production_year.x") %>%
+  mutate(other = f/Other*100)
+
+directors_a <- directors_o %>%
+  inner_join(directors_usa, by = "Production_year.x") %>%
+  ggplot(aes(x = Production_year.x, y = U.S))+
+  geom_line(color = "red")+
+  geom_line(aes(x = Production_year.x, y = Other),color = "blue")+
+  labs(title= " Number of Directors in the Rest of the World VS. in the U.S. (1911-2017) ", x = "Year of Production",  y = "Number of Directors", caption = "Source: IMDB")+
+  geom_text( x = 2015, y = 2000, label = "U.S", color = "red", size = 4, family = "Arial")+
+  geom_text( x = 1988, y = 10000, label = "The Rest of the World", color = "blue", size = 4, family = "Arial")+
+  theme_linedraw()
+
+directors_a 
+```
+
+```{r}
+directors_af <- directors_of %>%
+  inner_join(directors_usaf, by = "Production_year.x") %>%
+  ggplot(aes(x = Production_year.x, y = u.s))+
+  geom_line(color = "red")+
+  geom_line(aes(x = Production_year.x, y = other), color = "blue")+
+  labs(title= "Percent of Female Directors in the Rest of the World VS. in the U.S. (1911-2017) ", x = "Year of Production",  y = "Percent of Female Directors", caption = "Source: IMDB")+
+   geom_text( x = 2013, y = 6, label = "U.S", color = "red", size = 4, family = "Arial")+
+  geom_text( x = 1982, y = 20, label = "The Rest of the World", color = "blue", size = 4, family = "Arial")+
+  theme_linedraw()
+
+directors_af
 ```
 
 According to the Motion Picture Association of America, 50% of moviegoers are women, suggesting the demand for movies directed from a female perspective is there. How can this vast underrepresentation of women in film be improved? Supporting movies with female directors by seeing the movie in theaters sends an economic message to the top production companies that we are interested in more female directed movies. An increase in female directors should also help reduce the gender gap in other aspects of movie production. The Center for the Study of Women in Television and Film found that films with at least one female director employed greater percentages of women working as writers, editors, cinematographers, and composers than films with all male directors. So go watch some female-directed movies!
